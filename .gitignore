@@ -5,3 +5,6 @@ Temp
 /Assembly-CSharp.csproj
 /Assembly-CSharp-Editor.csproj
 /VoidTest.sln
+Build
+StreamingAssets
+/Assets/StreamingAssets.meta
