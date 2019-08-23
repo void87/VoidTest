@@ -12,7 +12,7 @@ namespace VoidFramework {
 
     public class Builder : Editor {
 
-        public static string sourcePath = Application.dataPath + "/assetbundle_raw";
+        public static string sourcePath = Application.dataPath + "/ABRes";
         private const string ASSETBUNDLESOUTPUTPATH = "Assets/StreamingAssets";
 
         private static string m_assetPath = Application.streamingAssetsPath;
@@ -21,24 +21,62 @@ namespace VoidFramework {
 
         private static List<string> bundleRelativePaths = new List<string>();
 
+
         /// <summary>
         /// 设置AB包名
         /// </summary>
-        [MenuItem("Tools/AssetBundle/Set Asset Bundle Names")]
+        [MenuItem("Tools/AssetBundle/SetABName")]
         public static void SetBundleNames() {
-            ClearAssetBundlesName();
-
-            bundleRelativePaths.Clear();
-
-            Pack(sourcePath);
-
+            HandleDirectory(sourcePath);
             Debug.Log("AB包名设置完成");
+        }
+
+
+        private static void HandleDirectory(string directoryPath) {
+
+            DirectoryInfo di = new DirectoryInfo(directoryPath);
+            FileSystemInfo[] fsis = di.GetFileSystemInfos();
+
+            foreach (var fsi in fsis) {
+                if (fsi is DirectoryInfo) {
+                    HandleDirectory(fsi.FullName);
+                } else {
+                    if (!fsi.FullName.EndsWith(".meta") && !fsi.FullName.EndsWith(".keep")) {
+                        HandleFile(fsi.FullName);
+                    }
+                }
+            }
+        }
+
+        private static void HandleFile(string filePath) {
+            filePath = filePath.Replace("\\", "/");
+            filePath = "Assets/" + filePath.Substring(Application.dataPath.Length + 1);
+
+            var assetName = filePath.Split('/')[2];
+
+            AssetImporter assetImporter = AssetImporter.GetAtPath(filePath);
+            assetImporter.assetBundleName = assetName;
+        }
+
+        /// <summary>
+        /// 清除AB包名
+        /// </summary>
+        [MenuItem("Tools/AssetBundle/ClearABName")]
+        public static void ClearABName() {
+            string[] abNames = AssetDatabase.GetAllAssetBundleNames();
+
+            foreach (var abName in abNames) {
+                Debug.Log(abName);
+                AssetDatabase.RemoveAssetBundleName(abName, true);
+            }
+
+            Debug.Log("AB包名清除完成");
         }
 
         /// <summary>
         /// 生成包
         /// </summary>
-        [MenuItem("Tools/AssetBundle/Build Bundles")]
+        [MenuItem("Tools/AssetBundle/BuildAB")]
         public static void BuildAssetBundle() {
             string outputPath = ASSETBUNDLESOUTPUTPATH + "/" + Platform.GetPlatformFolder(EditorUserBuildSettings.activeBuildTarget);
 
@@ -48,22 +86,22 @@ namespace VoidFramework {
 
             BuildPipeline.BuildAssetBundles(outputPath, BuildAssetBundleOptions.None, EditorUserBuildSettings.activeBuildTarget);
 
+            AssetDatabase.Refresh();
+
             Debug.Log("打包完成");
-
-            AssetDatabase.Refresh();
         }
 
-        /// <summary>
-        /// 生成资源版本文件
-        /// </summary>
-        [MenuItem("Tools/AssetBundle/Generate Resource Version File")]
-        public static void GenerateVersionFile() {
-            GenerateCfgFile();
+        ///// <summary>
+        ///// 生成资源版本文件
+        ///// </summary>
+        //[MenuItem("Tools/AssetBundle/Generate Resource Version File")]
+        //public static void GenerateVersionFile() {
+        //    GenerateCfgFile();
 
-            EditorCoroutineRunner.StartEditorCoroutine(Wait());
-            Debug.Log("成功生成资源版本文件");
-            AssetDatabase.Refresh();
-        }
+        //    EditorCoroutineRunner.StartEditorCoroutine(Wait());
+        //    Debug.Log("成功生成资源版本文件");
+        //    AssetDatabase.Refresh();
+        //}
 
         private static IEnumerator Wait() {
             Debug.Log("wait");
@@ -88,20 +126,6 @@ namespace VoidFramework {
         }
 
         /// <summary>
-        /// 清除AB名
-        /// </summary>
-        private static void ClearAssetBundlesName() {
-            string[] bundleNames = AssetDatabase.GetAllAssetBundleNames();
-
-            int length = bundleNames.Length;
-            string[] oldAssetBundleNames = new string[length];
-
-            foreach (var item in bundleNames) {
-                AssetDatabase.RemoveAssetBundleName(item, true);
-            }
-        }
-
-        /// <summary>
         /// 打包
         /// </summary>
         private static void Pack(string source) {
@@ -122,29 +146,7 @@ namespace VoidFramework {
             }
         }
 
-        private static void HandleFile(string source) {
-            //Debug.Log("source is: " + source);
-            string _source = Replace(source);
 
-            string _assetPath = "Assets" + _source.Substring(Application.dataPath.Length);  // Assets/assetbundle_raw/...
-            string _assetPath2 = _source.Substring(Application.dataPath.Length + 1);        // assetbundle_raw/...
-            //Debug.Log("_assetPath is " + _assetPath);
-            //Debug.Log("_assetPath2 is " + _assetPath2);
-
-            AssetImporter assetImporter = AssetImporter.GetAtPath(_assetPath);
-            string assetName = _assetPath2.Substring(_assetPath2.IndexOf("/") + 1);
-            assetName += ".unity3d";
-            assetImporter.assetBundleName = assetName;
-
-            Debug.Log(assetName);
-
-            //FileDependency(_assetPath);
-            
-            //if (!bundleRelativePaths.Contains(assetName)) {
-            //    bundleRelativePaths.Add(assetName);
-            //}
-
-        }
 
         /// <summary>
         /// 将 \ 转换为 /

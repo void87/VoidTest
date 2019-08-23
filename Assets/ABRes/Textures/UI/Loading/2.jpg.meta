@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: cc8e3c3080e217b4d9bd8ad1e8b13e8a
+guid: 2631bb9226e05704ab919db95e72de9c
 TextureImporter:
   fileIDToRecycleName: {}
   externalObjects: {}
@@ -108,7 +108,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: bdbc8c1552766f34abf94ca6d0204ed0
+    spriteID: 67b39b44eb05390459f2784ac008fe7f
     vertices: []
     indices: 
     edges: []
@@ -117,5 +117,5 @@ TextureImporter:
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
   userData: 
-  assetBundleName: textures/3/3.jpg.unity3d
+  assetBundleName: textures
   assetBundleVariant: 
