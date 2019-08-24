@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using LitJson;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 
@@ -19,8 +19,8 @@ namespace Game {
 
 
 
-        private JsonData jdLocalFile;
-        private JsonData jdServerFile;
+        //private JsonData jdLocalFile;
+        //private JsonData jdServerFile;
 
         private Dictionary<string, string> LocalBundleVersion;  // 本地资源名和路径字典
         private Dictionary<string, string> ServerBundleVersion; // 服务器资源名和路径字典

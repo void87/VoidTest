@@ -35,6 +35,11 @@ namespace Game {
 
             loading.Init();
         }
+
+        public void InitOther() {
+            Window_Login login = new Window_Login();
+            login.Init();
+        }
     }
 }
 

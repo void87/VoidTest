@@ -9,8 +9,11 @@ using Game;
 
 public class GameLauncher : MonoBehaviour {
 
-    private static Transform uiRoot;
     private static Transform sceneRoot;
+    private static Transform sceneCamera;
+    private static Transform uiRoot;
+    private static Transform uiCamera;
+
 
     public static GameLauncher Instance {
         get;
@@ -39,18 +42,13 @@ public class GameLauncher : MonoBehaviour {
         uiRoot = GameObject.Find("UIRoot").transform;
         sceneRoot = GameObject.Find("SceneRoot").transform;
 
-        UIManager.Instance.Init();
-
+        //UIManager.Instance.Init();
         ABManager.Instance.Init();
-
-        //ResManager.Instance.Load<"assetbundle_raw">
-
-        //ABManager.Instance.Init();
     }
 
 
 
-    void Start() {
+    private void Start() {
         //panel = GameObject.Find("Canvas/Panel").transform as RectTransform;
         //text = panel.Find("Text").GetComponent<Text>();
         //button = panel.Find("Button").GetComponent<Button>();
@@ -130,7 +128,7 @@ public class GameLauncher : MonoBehaviour {
 
     }
 
-    void Update() {
+    private void Update() {
 
     }
 

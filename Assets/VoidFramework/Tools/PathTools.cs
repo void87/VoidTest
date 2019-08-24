@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace VoidFramework {
+
     public class PathTools {
 
         /* 路径常量 */
