@@ -14,6 +14,8 @@ namespace Game {
         public void Init() {
             rectTransform = GameObject.Instantiate(ResManager.Instance.Load<GameObject>("prefabs", "ABRes/Prefabs/UI/Loading/Window_Login.prefab")).transform as RectTransform;
             GameLauncher.AddToUI(rectTransform);
+            Hide();
+
 
             btn_Login = rectTransform.Find("btn_Login").GetComponent<Button>();
 
@@ -27,6 +29,20 @@ namespace Game {
         }
 
         public void Destroy() {
+
+        }
+
+
+
+        public void Show() {
+            rectTransform.gameObject.SetActive(true);
+        }
+
+        public void Hide() {
+            rectTransform.gameObject.SetActive(false);
+        }
+
+        public void PushData(object param) {
 
         }
 

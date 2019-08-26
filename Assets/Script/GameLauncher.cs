@@ -40,10 +40,15 @@ public class GameLauncher : MonoBehaviour {
         Instance = this;
 
         uiRoot = GameObject.Find("UIRoot").transform;
-        sceneRoot = GameObject.Find("SceneRoot").transform;
+        //sceneRoot = GameObject.Find("SceneRoot").transform;
+
+        ABManager.Instance.Init();
+        ABManager.Instance.DownloadVersionFile(() => {
+            UIManager.Instance.InitLoading();
+        });
 
         //UIManager.Instance.Init();
-        ABManager.Instance.Init();
+        //ABManager.Instance.Init();
     }
 
 

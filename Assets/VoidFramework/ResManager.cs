@@ -21,6 +21,7 @@ namespace VoidFramework {
         public T Load<T>(string abName, string assetPath) where T : Object {
 #if UNITY_EDITOR
             return AssetDatabase.LoadAssetAtPath<T>("Assets/" + assetPath);
+            //return ABManager.Instance.LoadAsset<T>(abName, "Assets/" + assetPath);
 #else
             return ABManager.Instance.LoadAsset<T>(abName, "Assets/" + assetPath);
 #endif
