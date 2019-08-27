@@ -20,7 +20,7 @@ namespace Game {
             txt_Loading.text = "下载AB: 0";
             slider_Progress = rectTransform.Find("slider_Progress").GetComponent<Slider>();
 
-            ABManager.Instance.DownloadABs(DownloadAB, LoadAB, DownloadAndLoadComplete);
+            //ABManager.Instance.DownloadABs(DownloadAB, LoadAB, DownloadAndLoadComplete);
 
             //GameLauncher.Instance.StartCoroutine(ABManager.Instance.DownloadVersionFileCorountine(ABManager.Instance.VERSIONPATH, DownloadVersionFileComplete));
         }

@@ -9,15 +9,15 @@ using System.Linq;
 
 namespace VoidFramework {
 
-    public class VersionData {
-        public string Version;
-        public List<SingleResouce> Resouces;
-    }
+    //public class VersionData {
+    //    public string Version;
+    //    public List<SingleResouce> Resouces;
+    //}
 
-    public class SingleResouce {
-        public string Name;
-        public string Hash;
-    }
+    //public class SingleResouce {
+    //    public string Name;
+    //    public string Hash;
+    //}
 
     public class ABManager {
 
@@ -59,232 +59,232 @@ namespace VoidFramework {
 
 
 
-        private Coroutine coroutine;
+        //private Coroutine coroutine;
 
-        public void Init() {
-            Debug.Log("ABManager Init");
-        }
+        //public void Init() {
+        //    Debug.Log("ABManager Init");
+        //}
 
-        /// <summary>
-        /// 获取平台对应文件夹
-        /// </summary>
-        public static string GetRuntimePlatform() {
-            string platform = "";
-            if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor) {
-                platform = "windows";
-            } else if (Application.platform == RuntimePlatform.Android) {
-                platform = "android";
-            } else if (Application.platform == RuntimePlatform.IPhonePlayer) {
-                platform = "ios";
-            } else if (Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.OSXEditor) {
-                platform = "osx";
-            }
-            return platform;
-        }
+        ///// <summary>
+        ///// 获取平台对应文件夹
+        ///// </summary>
+        //public static string GetRuntimePlatform() {
+        //    string platform = "";
+        //    if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor) {
+        //        platform = "windows";
+        //    } else if (Application.platform == RuntimePlatform.Android) {
+        //        platform = "android";
+        //    } else if (Application.platform == RuntimePlatform.IPhonePlayer) {
+        //        platform = "ios";
+        //    } else if (Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.OSXEditor) {
+        //        platform = "osx";
+        //    }
+        //    return platform;
+        //}
 
-        /// <summary>
-        /// 下载版本文件
-        /// </summary>
-        public void DownloadVersionFile(Action callback) {
-            GameLauncher.Instance.StartCoroutine(DownloadVersionFileCorountine(SERVERABPATH + "/" + GetRuntimePlatform() + "/" + VERSIONFILENAME, callback));
-        }
+        ///// <summary>
+        ///// 下载版本文件
+        ///// </summary>
+        //public void DownloadVersionFile(Action callback) {
+        //    GameLauncher.Instance.StartCoroutine(DownloadVersionFileCorountine(SERVERABPATH + "/" + GetRuntimePlatform() + "/" + VERSIONFILENAME, callback));
+        //}
 
-        private IEnumerator DownloadVersionFileCorountine(string versionPath, Action callback) {
-            using (UnityWebRequest request = UnityWebRequest.Get(versionPath)) {
-                yield return request.SendWebRequest();
+        //private IEnumerator DownloadVersionFileCorountine(string versionPath, Action callback) {
+        //    using (UnityWebRequest request = UnityWebRequest.Get(versionPath)) {
+        //        yield return request.SendWebRequest();
 
-                if (request.isDone) {
+        //        if (request.isDone) {
 
-                    var serverVersionData = JsonConvert.DeserializeObject<VersionData>(request.downloadHandler.text);
+        //            var serverVersionData = JsonConvert.DeserializeObject<VersionData>(request.downloadHandler.text);
 
-                    Debug.Log("版本文件下载完成");
-                    Debug.Log(serverVersionData.Version);
+        //            Debug.Log("版本文件下载完成");
+        //            Debug.Log(serverVersionData.Version);
 
-                    // 创建平台文件夹
-                    if (!Directory.Exists(Application.persistentDataPath + "/" + GetRuntimePlatform())) {
-                        Directory.CreateDirectory(Application.persistentDataPath + "/" + GetRuntimePlatform());
-                    }
+        //            // 创建平台文件夹
+        //            if (!Directory.Exists(Application.persistentDataPath + "/" + GetRuntimePlatform())) {
+        //                Directory.CreateDirectory(Application.persistentDataPath + "/" + GetRuntimePlatform());
+        //            }
 
-                    // 本地没有版本文件,下载版本文件, 下载所有AB
-                    if (!File.Exists(Application.persistentDataPath + "/" + GetRuntimePlatform() + "/" + VERSIONFILENAME)) {
-                        Debug.Log("没有版本文件");
-                        // 写入版本文件
-                        File.WriteAllBytes(Application.persistentDataPath + "/" + GetRuntimePlatform() + "/" + VERSIONFILENAME, request.downloadHandler.data);
-                        // 加入下载字典
-                        foreach (var item in serverVersionData.Resouces) {
-                            localABDict.Add(item.Name, item.Hash);
+        //            // 本地没有版本文件,下载版本文件, 下载所有AB
+        //            if (!File.Exists(Application.persistentDataPath + "/" + GetRuntimePlatform() + "/" + VERSIONFILENAME)) {
+        //                Debug.Log("没有版本文件");
+        //                // 写入版本文件
+        //                File.WriteAllBytes(Application.persistentDataPath + "/" + GetRuntimePlatform() + "/" + VERSIONFILENAME, request.downloadHandler.data);
+        //                // 加入下载字典
+        //                foreach (var item in serverVersionData.Resouces) {
+        //                    localABDict.Add(item.Name, item.Hash);
 
-                            needDownloadABDict.Add(item.Name, item.Hash);
-                        }
+        //                    needDownloadABDict.Add(item.Name, item.Hash);
+        //                }
 
-                    // 本地有版本文件,对比更新
-                    } else {
-                        Debug.Log("有版本文件");
+        //                // 本地有版本文件,对比更新
+        //            } else {
+        //                Debug.Log("有版本文件");
 
-                        var localVersionData = JsonConvert.DeserializeObject<VersionData>(File.ReadAllText(Application.persistentDataPath + "/" + GetRuntimePlatform() + "/" + VERSIONFILENAME));
+        //                var localVersionData = JsonConvert.DeserializeObject<VersionData>(File.ReadAllText(Application.persistentDataPath + "/" + GetRuntimePlatform() + "/" + VERSIONFILENAME));
 
-                        // 写入版本文件
-                        File.WriteAllBytes(Application.persistentDataPath + "/" + GetRuntimePlatform() + "/" + VERSIONFILENAME, request.downloadHandler.data);
+        //                // 写入版本文件
+        //                File.WriteAllBytes(Application.persistentDataPath + "/" + GetRuntimePlatform() + "/" + VERSIONFILENAME, request.downloadHandler.data);
 
-                        // 加入服务端AB字典
-                        foreach (var item in serverVersionData.Resouces) {
-                            serverABDict.Add(item.Name, item.Hash);
-                        }
+        //                // 加入服务端AB字典
+        //                foreach (var item in serverVersionData.Resouces) {
+        //                    serverABDict.Add(item.Name, item.Hash);
+        //                }
 
-                        // 加入本地AB字典
-                        foreach (var item in localVersionData.Resouces) {
-                            localABDict.Add(item.Name, item.Hash);
-                        }
+        //                // 加入本地AB字典
+        //                foreach (var item in localVersionData.Resouces) {
+        //                    localABDict.Add(item.Name, item.Hash);
+        //                }
 
-                        foreach (var item in serverABDict) {
-                            var hash = string.Empty;
+        //                foreach (var item in serverABDict) {
+        //                    var hash = string.Empty;
 
-                            // 本地有AB
-                            if (localABDict.TryGetValue(item.Key, out hash)) {
-                                // hash不同,使用服务端hash
-                                if (item.Value != hash) {
-                                    needDownloadABDict.Add(item.Key, item.Value);
-                                }
+        //                    // 本地有AB
+        //                    if (localABDict.TryGetValue(item.Key, out hash)) {
+        //                        // hash不同,使用服务端hash
+        //                        if (item.Value != hash) {
+        //                            needDownloadABDict.Add(item.Key, item.Value);
+        //                        }
 
-                            // 本地没有AB
-                            } else {
-                                needDownloadABDict.Add(item.Key, item.Value);
-                            }
-                        }
+        //                        // 本地没有AB
+        //                    } else {
+        //                        needDownloadABDict.Add(item.Key, item.Value);
+        //                    }
+        //                }
 
-                        localABDict.Clear();
-                        // 重新设置本地AB字典为最新
-                        foreach (var item in serverVersionData.Resouces) {
-                            localABDict.Add(item.Name, item.Hash);
-                        }
-                    }
+        //                localABDict.Clear();
+        //                // 重新设置本地AB字典为最新
+        //                foreach (var item in serverVersionData.Resouces) {
+        //                    localABDict.Add(item.Name, item.Hash);
+        //                }
+        //            }
 
-                    // 需要下载新的ab包
-                    if (needDownloadABDict.Count > 0) {
-                        // 有最新的LoadingAB包需要下载
-                        if (needDownloadABDict.Keys.Contains(LOADINGABNAME)) {
-                            GameLauncher.Instance.StartCoroutine(DownloadLoadingABCoroutine(callback));
-                        // 不需要下载LoadingAB包
-                        } else {
-                            AssetBundle ab = AssetBundle.LoadFromFile(Application.persistentDataPath + "/" + GetRuntimePlatform() + "/" + LOADINGABNAME);
-                            loadedABDict.Add(LOADINGABNAME, ab);
+        //            // 需要下载新的ab包
+        //            if (needDownloadABDict.Count > 0) {
+        //                // 有最新的LoadingAB包需要下载
+        //                if (needDownloadABDict.Keys.Contains(LOADINGABNAME)) {
+        //                    GameLauncher.Instance.StartCoroutine(DownloadLoadingABCoroutine(callback));
+        //                    // 不需要下载LoadingAB包
+        //                } else {
+        //                    AssetBundle ab = AssetBundle.LoadFromFile(Application.persistentDataPath + "/" + GetRuntimePlatform() + "/" + LOADINGABNAME);
+        //                    loadedABDict.Add(LOADINGABNAME, ab);
 
-                            if (callback != null) {
-                                callback();
-                            }
-                        }
-                    // 不需要下载新的AB包
-                    } else {
-                        AssetBundle ab = AssetBundle.LoadFromFile(Application.persistentDataPath + "/" + GetRuntimePlatform() + "/" + LOADINGABNAME);
-                        loadedABDict.Add(LOADINGABNAME, ab);
+        //                    if (callback != null) {
+        //                        callback();
+        //                    }
+        //                }
+        //                // 不需要下载新的AB包
+        //            } else {
+        //                AssetBundle ab = AssetBundle.LoadFromFile(Application.persistentDataPath + "/" + GetRuntimePlatform() + "/" + LOADINGABNAME);
+        //                loadedABDict.Add(LOADINGABNAME, ab);
 
-                        if (callback != null) {
-                            callback();
-                        }
-                    }
-                }
-            }
-        }
+        //                if (callback != null) {
+        //                    callback();
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
-        /// <summary>
-        /// 下载LoadingAB
-        /// </summary>
-        private IEnumerator DownloadLoadingABCoroutine(Action downloadCallback) {
-            using (UnityWebRequest request = UnityWebRequest.Get(SERVERABPATH + "/" + GetRuntimePlatform() + "/" + LOADINGABNAME)) {
-                yield return request.SendWebRequest();
+        ///// <summary>
+        ///// 下载LoadingAB
+        ///// </summary>
+        //private IEnumerator DownloadLoadingABCoroutine(Action downloadCallback) {
+        //    using (UnityWebRequest request = UnityWebRequest.Get(SERVERABPATH + "/" + GetRuntimePlatform() + "/" + LOADINGABNAME)) {
+        //        yield return request.SendWebRequest();
 
-                if (request.isDone) {
-                    File.WriteAllBytes(Application.persistentDataPath + "/" + GetRuntimePlatform() + "/" + LOADINGABNAME, request.downloadHandler.data);
+        //        if (request.isDone) {
+        //            File.WriteAllBytes(Application.persistentDataPath + "/" + GetRuntimePlatform() + "/" + LOADINGABNAME, request.downloadHandler.data);
 
-                    needDownloadABDict.Remove(LOADINGABNAME);
+        //            needDownloadABDict.Remove(LOADINGABNAME);
 
-                    AssetBundle ab = AssetBundle.LoadFromFile(Application.persistentDataPath + "/" + GetRuntimePlatform() + "/" + LOADINGABNAME);
-                    loadedABDict.Add(LOADINGABNAME, ab);
+        //            AssetBundle ab = AssetBundle.LoadFromFile(Application.persistentDataPath + "/" + GetRuntimePlatform() + "/" + LOADINGABNAME);
+        //            loadedABDict.Add(LOADINGABNAME, ab);
 
-                    if (downloadCallback != null) {
-                        downloadCallback();
-                    }
-                }
-            }
-        }
+        //            if (downloadCallback != null) {
+        //                downloadCallback();
+        //            }
+        //        }
+        //    }
+        //}
 
-        /// <summary>
-        /// 下载需要更新的AB包
-        /// </summary>
-        public void DownloadABs(Action<float> downloadCallback, Action<float> loadCallback, Action callback) {
-            if (needDownloadABDict.Count > 0) {
-                GameLauncher.Instance.StartCoroutine(DownloadAB(downloadCallback, loadCallback, callback));
-            } else {
-                LoadABs(loadCallback, callback);
-            }
-        }
+        ///// <summary>
+        ///// 下载需要更新的AB包
+        ///// </summary>
+        //public void DownloadABs(Action<float> downloadCallback, Action<float> loadCallback, Action callback) {
+        //    if (needDownloadABDict.Count > 0) {
+        //        GameLauncher.Instance.StartCoroutine(DownloadAB(downloadCallback, loadCallback, callback));
+        //    } else {
+        //        LoadABs(loadCallback, callback);
+        //    }
+        //}
 
-        private IEnumerator DownloadAB(Action<float> downloadCallback, Action<float> loadCallback, Action callback) {
-            using (UnityWebRequest request = UnityWebRequest.Get(SERVERABPATH + "/" + GetRuntimePlatform() + "/" + needDownloadABDict.Keys.ToList()[downloadedABIndex])) {
-                yield return request.SendWebRequest();
+        //private IEnumerator DownloadAB(Action<float> downloadCallback, Action<float> loadCallback, Action callback) {
+        //    using (UnityWebRequest request = UnityWebRequest.Get(SERVERABPATH + "/" + GetRuntimePlatform() + "/" + needDownloadABDict.Keys.ToList()[downloadedABIndex])) {
+        //        yield return request.SendWebRequest();
 
-                if (request.isDone) {
-                    File.WriteAllBytes(Application.persistentDataPath + "/" + GetRuntimePlatform() + "/" + needDownloadABDict.Keys.ToList()[downloadedABIndex] , request.downloadHandler.data);
-                    
-                    if (downloadCallback != null) {
-                        downloadCallback((float)(downloadedABIndex + 1) / (float)(localABDict.Count - 1));
-                    }
+        //        if (request.isDone) {
+        //            File.WriteAllBytes(Application.persistentDataPath + "/" + GetRuntimePlatform() + "/" + needDownloadABDict.Keys.ToList()[downloadedABIndex], request.downloadHandler.data);
 
-                    downloadedABIndex++;
+        //            if (downloadCallback != null) {
+        //                downloadCallback((float)(downloadedABIndex + 1) / (float)(localABDict.Count - 1));
+        //            }
 
-                    if (downloadedABIndex == needDownloadABDict.Count ) {
-                        LoadABs(loadCallback, callback);
+        //            downloadedABIndex++;
 
-                    } else {
-                        GameLauncher.Instance.StartCoroutine(DownloadAB(downloadCallback, loadCallback, callback));
-                    }
-                }
-            }
-        }
+        //            if (downloadedABIndex == needDownloadABDict.Count) {
+        //                LoadABs(loadCallback, callback);
 
-        /// <summary>
-        /// 加载AB包
-        /// </summary>
-        public void LoadABs(Action<float> loadCallback, Action callback) {
-            foreach (var item in localABDict) {
-                if (item.Key != LOADINGABNAME) {
-                    needLoadABDict.Add(item.Key, item.Value);
-                }
-            }
+        //            } else {
+        //                GameLauncher.Instance.StartCoroutine(DownloadAB(downloadCallback, loadCallback, callback));
+        //            }
+        //        }
+        //    }
+        //}
 
-            GameLauncher.Instance.StartCoroutine(LoadABCoroutine(loadCallback, callback));
-        }
+        ///// <summary>
+        ///// 加载AB包
+        ///// </summary>
+        //public void LoadABs(Action<float> loadCallback, Action callback) {
+        //    foreach (var item in localABDict) {
+        //        if (item.Key != LOADINGABNAME) {
+        //            needLoadABDict.Add(item.Key, item.Value);
+        //        }
+        //    }
 
-        private IEnumerator LoadABCoroutine(Action<float> loadCallback, Action callback) {
-            yield return new WaitForEndOfFrame();
+        //    GameLauncher.Instance.StartCoroutine(LoadABCoroutine(loadCallback, callback));
+        //}
 
-            AssetBundle ab = AssetBundle.LoadFromFile(Application.persistentDataPath + "/" + GetRuntimePlatform() + "/" + needLoadABDict.ToList()[loadedABIndex].Key);
-            loadedABDict.Add(needLoadABDict.ToList()[loadedABIndex].Key, ab);
+        //private IEnumerator LoadABCoroutine(Action<float> loadCallback, Action callback) {
+        //    yield return new WaitForEndOfFrame();
 
-            if (loadCallback != null) {
-                loadCallback((float)(loadedABIndex + 1) / (float)(needLoadABDict.Count - 1));
-            }
+        //    AssetBundle ab = AssetBundle.LoadFromFile(Application.persistentDataPath + "/" + GetRuntimePlatform() + "/" + needLoadABDict.ToList()[loadedABIndex].Key);
+        //    loadedABDict.Add(needLoadABDict.ToList()[loadedABIndex].Key, ab);
 
-            loadedABIndex++;
+        //    if (loadCallback != null) {
+        //        loadCallback((float)(loadedABIndex + 1) / (float)(needLoadABDict.Count - 1));
+        //    }
 
-            if (loadedABIndex == needLoadABDict.Count) {
-                if (callback != null) {
-                    callback();
-                }
+        //    loadedABIndex++;
 
-                yield break;
-            } else {
-                GameLauncher.Instance.StartCoroutine(LoadABCoroutine(loadCallback, callback));
-            }
+        //    if (loadedABIndex == needLoadABDict.Count) {
+        //        if (callback != null) {
+        //            callback();
+        //        }
 
-        }
+        //        yield break;
+        //    } else {
+        //        GameLauncher.Instance.StartCoroutine(LoadABCoroutine(loadCallback, callback));
+        //    }
 
-        public T LoadAsset<T>(string abName, string assetName) where T: UnityEngine.Object {
-            Debug.Log(loadedABDict[abName]);
+        //}
 
-            return loadedABDict[abName].LoadAsset<T>(assetName) as T;
-        }
-    
+        //public T LoadAsset<T>(string abName, string assetName) where T : UnityEngine.Object {
+        //    Debug.Log(loadedABDict[abName]);
+
+        //    return loadedABDict[abName].LoadAsset<T>(assetName) as T;
+        //}
+
     }
 }
 

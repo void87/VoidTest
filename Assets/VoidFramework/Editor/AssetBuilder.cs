@@ -13,6 +13,16 @@ namespace VoidFramework {
 
     public class AssetBuilder : Editor {
 
+        private class VersionData {
+            public string Version;
+            public List<SingleResouce> Resouces;
+        }
+
+        private class SingleResouce {
+            public string Name;
+            public string Hash;
+        }
+
         public static string sourcePath = Application.dataPath + "/ABRes";
         private const string ASSETBUNDLESOUTPUTPATH = "Assets/StreamingAssets";
 
@@ -117,14 +127,6 @@ namespace VoidFramework {
             AssetDatabase.Refresh();
         }
 
-        //private static IEnumerator Wait() {
-        //    Debug.Log("wait");
-
-        //    while (!canFinish) {
-        //        yield return null;
-        //    }
-        //}
-
         /// <summary>
         /// 加载Manifest
         /// </summary>
@@ -188,67 +190,11 @@ namespace VoidFramework {
             } else if (Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.OSXEditor) {
                 platform = "osx";
             }
+
+            Debug.Log(platform);
+
             return platform;
         }
-
-
-
-        ///// <summary>
-        ///// 将 \ 转换为 /
-        ///// </summary>
-        //private static string Replace(string s) {
-        //    return s.Replace("\\", "/");
-        //}
-
-        ///// <summary>
-        ///// 获取文件的依赖
-        ///// </summary>
-        //public static void FileDependency(string path) {         
-        //    try {
-        //        Debug.Log("path is " + path);
-
-        //        string[] dependencies = AssetDatabase.GetDependencies(path);
-
-        //        int counter = 0;
-
-        //        foreach (var item in dependencies) {
-        //            if (item.Equals(path) || item.EndsWith(".cs")) {
-        //                continue;
-        //            }
-        //            counter++;
-        //        }
-
-        //        if (counter == 0) {
-        //            return;
-        //        }
-
-        //        for (int i = 0; i < dependencies.Length; i++) {
-        //            Debug.Log("dependencies" + i + " is " + dependencies[i]);
-
-        //            if (dependencies[i].Equals(path) || dependencies[i].EndsWith(".cs")) {
-        //                continue;
-        //            }
-
-        //            AssetImporter assetImporter = AssetImporter.GetAtPath(dependencies[i]);
-        //            string assetName = dependencies[i] + ".unity3d";
-        //            assetName = assetName.Substring(assetName.IndexOf("/") + 1);
-        //            assetImporter.assetBundleName = assetName;
-
-        //            Debug.Log("assetName is " + assetName);
-
-        //            if (!bundleRelativePaths.Contains(assetName)) {
-        //                bundleRelativePaths.Add(assetName);
-        //            }
-
-        //            FileDependency(dependencies[i]);
-
-        //        }
-
-
-        //    } catch (Exception error) {
-        //        Debug.Log("error is " + error);
-        //    }
-        //}
 
     }
 

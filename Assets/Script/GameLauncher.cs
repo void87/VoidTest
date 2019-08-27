@@ -5,9 +5,13 @@ using UnityEngine.UI;
 using VoidFramework;
 using System.IO;
 using System;
+using UnityEngine.Networking;
 using Game;
 
 public class GameLauncher : MonoBehaviour {
+
+    private ILRuntime.Runtime.Enviorment.AppDomain appDomain;
+    private object gameManager;
 
     private static Transform sceneRoot;
     private static Transform sceneCamera;
@@ -39,97 +43,24 @@ public class GameLauncher : MonoBehaviour {
     private void Awake() {
         Instance = this;
 
+        appDomain = new ILRuntime.Runtime.Enviorment.AppDomain();
+
         uiRoot = GameObject.Find("UIRoot").transform;
         //sceneRoot = GameObject.Find("SceneRoot").transform;
 
-        ABManager.Instance.Init();
-        ABManager.Instance.DownloadVersionFile(() => {
-            UIManager.Instance.InitLoading();
-        });
-
-        //UIManager.Instance.Init();
         //ABManager.Instance.Init();
+        //ABManager.Instance.DownloadVersionFile(() => {
+        //    UIManager.Instance.InitLoading();
+        //});
+
+        //WWW www = new WWW(string.Empty);
+
+        StartCoroutine(DownloadDLL());
     }
 
 
 
     private void Start() {
-        //panel = GameObject.Find("Canvas/Panel").transform as RectTransform;
-        //text = panel.Find("Text").GetComponent<Text>();
-        //button = panel.Find("Button").GetComponent<Button>();
-
-        //text.text += "persistentDataPath: " + Application.persistentDataPath + "\r\n";
-        //text.text += "dataPath: " + Application.dataPath + "\r\n";
-        //text.text += "temporaryCachePath: " + Application.temporaryCachePath + "\r\n";
-        //text.text += "streamingAssetsPath: " + Application.streamingAssetsPath + "\r\n";
-
-        //string ss = string.Empty;
-
-        //button.onClick.AddListener(() => {
-        //    //if (Application.platform == RuntimePlatform.) {
-        //        try {
-
-        //            DirectoryInfo di = new DirectoryInfo(Application.persistentDataPath);
-
-        //            ss += di.GetFiles().Length + "\r\n";
-        //            //Debug.Log(di.GetFiles().Length);
-
-        //            text.text = di.GetFiles().Length + "\r\n";
-
-        //            File.Create(Application.persistentDataPath + "/test1.txt");
-
-        //            ss += di.GetFiles().Length + "\r\n";
-
-        //            text.text += di.GetFiles().Length;
-        //            //Debug.Log(di.GetFiles().Length);
-
-
-        //        } catch (Exception ex) {
-        //            ss += ex.Message;
-        //            text.text = ss;
-        //        }
-        //    //}
-        //});
-
-
-        //StartCoroutine(LoadAssetBundle());
-
-
-        //            panel = GameObject.Find("Canvas/Panel").transform as RectTransform;
-        //            text = panel.Find("Text").GetComponent<Text>();
-
-        //            //text.text = Application.persistentDataPath;
-
-        //            //text.text = Application.platform.ToString();
-
-
-        //            SERVER_RES_URL = "file://" + Application.streamingAssetsPath + "/android";
-
-
-        //#if UNITY_EDITOR && UNITY_ANDROID
-        //            text.text = "1";
-        //            //Deb
-
-        //            //SERVER_RES_URL = "file://" + Application.streamingAssetsPath + "/android/";
-        //#elif UNITY_EDITOR && UNITY_IOS
-
-        //            text.text = "2";
-
-        //#elif UNITY_ANDROID
-
-        //            text.text = "3";
-
-        //#elif UNITY_IOS
-
-        //            text.text = "4";
-
-        //#endif
-
-        //            LocalBundleVersion = new Dictionary<string, string>();
-        //            ServerBundleVersion = new Dictionary<string, string>();
-        //            NeedDownFiles = new List<string>();
-
-
 
     }
 
@@ -137,47 +68,35 @@ public class GameLauncher : MonoBehaviour {
 
     }
 
-    //public Coroutine StartCoroutineCustom(IEnumerator enumerator) {
-    //    return StartCoroutine(enumerator);
-    //}
 
-    //public void StopCoroutineCustom(Coroutine coroutine) {
-    //    StopCoroutine(coroutine);
-    //}
+    private IEnumerator DownloadDLL() {
+        using (UnityWebRequest request = UnityWebRequest.Get(ABManager.SERVERABPATH + "/" + "TestHotFix.dll")) {
+            yield return request.SendWebRequest();
 
+            if (request.isDone) {
+                File.WriteAllBytes(Application.persistentDataPath + "/" + "TestHotFix.dll", request.downloadHandler.data);
 
-    //public IEnumerator LoadAssetBundle() {
-        //using (WWW www = new WWW("file://" + Application.streamingAssetsPath + "/" + "windows/prefabs/panel.prefab.unity3d")) {
-        //    Debug.Log("hahah");
-        //    yield return www;
-        //    Debug.Log("heihei");
-        //    if (www.progress >= 1) {
-        //        Debug.Log("zzzzz");
-        //        AssetBundle ab = www.assetBundle;
+                MemoryStream ms = new MemoryStream(request.downloadHandler.data);
+                appDomain.LoadAssembly(ms, null, new ILRuntime.Mono.Cecil.Pdb.PdbReaderProvider());
 
-        //        Debug.Log(ab);
+                InitializeILRuntime();
+                OnILRuntimeInitialized();
+            }
+        }
+    }
 
-        //        if (ab != null) {
+    private void InitializeILRuntime() {
+        LitJson.JsonMapper.RegisterILRuntimeCLRRedirection(appDomain);
+        appDomain.RegisterCrossBindingAdaptor(new CoroutineAdapter());
+    }
 
-        //            var prefab = ab.LoadAsset("Panel");
+    private void OnILRuntimeInitialized() {
+        gameManager = appDomain.Instantiate("TestHotFix.GameManager", null);
 
-        //            Debug.Log(prefab);
+        appDomain.Invoke("TestHotFix.GameManager", "Init", gameManager, null);
 
-        //            Instantiate(prefab);
-
-        //            //assetLoader = new AssetLoader(ab);
-
-        //            //if (abLoadCompleteHandler != null) {
-        //            //    abLoadCompleteHandler(abName);
-        //            //}
-
-        //        } else {
-        //            // Debug.LogError(GetType() + "/LoadAssetBundle()/www下载出错,请检查! AssetBundle URL: " + abDownloadPath + " 错误信息: " + www.error);
-        //        }
-        //    }
-        //}
-    //}
-
+        //appDomain.Invoke("TestHotFix.Class1", "Test1", null, null);
+    }
 
     public static void AddToUI(Transform transform) {
         transform.SetParent(uiRoot, false);

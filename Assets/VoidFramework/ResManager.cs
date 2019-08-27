@@ -23,7 +23,8 @@ namespace VoidFramework {
             return AssetDatabase.LoadAssetAtPath<T>("Assets/" + assetPath);
             //return ABManager.Instance.LoadAsset<T>(abName, "Assets/" + assetPath);
 #else
-            return ABManager.Instance.LoadAsset<T>(abName, "Assets/" + assetPath);
+            //return ABManager.Instance.LoadAsset<T>(abName, "Assets/" + assetPath);
+            return null;
 #endif
 
 

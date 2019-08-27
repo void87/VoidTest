@@ -1,0 +1,8 @@
+﻿<linker>  
+  <assembly fullname="Assembly-CSharp" preserve="all"/>
+  <assembly fullname="System.IO" preserver="all" />
+  <assembly fullname="UnityEngine" preserve="all"/>
+  <assembly fullname="UnityEngine.UnityWebRequestWWWModule" preserve="all" />
+  <assembly fullname="UnityEngine.AssetBundleModule" preserve="all" />
+  <assembly fullname="mscorlib" preserve="all" />
+</linker>
